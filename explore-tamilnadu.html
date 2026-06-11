@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore Tamil Nadu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ─────────────────────────────────────
+       RESET & ROOT VARIABLES
+    ───────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gold:   #D4A017;
+      --gold2:  #F0C040;
+      --rust:   #C04A20;
+      --dark:   #0F0C08;
+      --dark2:  #1C1610;
+      --dark3:  #2A1E10;
+      --cream:  #FAF6EF;
+      --cream2: #F2EDE3;
+      --text:   #2A1E10;
+      --muted:  #7A6A55;
+      --white:  #FFFFFF;
+
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans:  'Outfit', sans-serif;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-full: 999px;
+
+      --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 14px 36px rgba(0, 0, 0, 0.13);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { text-decoration: none; color: inherit; }
+    ul  { list-style: none; }
+
+    /* ─────────────────────────────────────
+       UTILITY CLASSES
+    ───────────────────────────────────── */
+    .section        { padding: 5rem 4rem; }
+    .section--white { background: var(--white); }
+    .section--dark  { background: var(--dark2); }
+
+    .eyebrow {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .heading-serif {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ─────────────────────────────────────
+       NAVIGATION
+    ───────────────────────────────────── */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      padding: 0 4rem;
+      background: rgba(15, 12, 8, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 160, 23, 0.15);
+    }
+
+    .navbar__logo {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+
+    .navbar__logo span {
+      font-weight: 400;
+      color: var(--white);
+    }
+
+    .navbar__links {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .navbar__links a {
+      font-size: 0.88rem;
+      color: #ccc;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .navbar__links a:hover {
+      color: var(--gold);
+      background: rgba(212, 160, 23, 0.1);
+    }
+
+    .navbar__cta {
+      background: var(--gold);
+      color: var(--dark);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.55rem 1.4rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .navbar__cta:hover { background: var(--gold2); }
+
+    /* ─────────────────────────────────────
+       PAGE SECTIONS  (tab-based navigation)
+       We use :target to show/hide pages
+    ───────────────────────────────────── */
+    .page {
+      display: none;
+      padding-top: 68px;
+      min-height: 100vh;
+    }
+
+    /* Default: show home */
+    #home       { display: block; }
+    #home:target,
+    #destinations:target,
+    #packages:target,
+    #contact:target { display: block; }
+
+    /* Hide others when a target is active */
+    body:has(#destinations:target) #home,
+    body:has(#packages:target)     #home,
+    body:has(#contact:target)      #home        { display: none; }
+
+    body:has(#home:target)         #destinations,
+    body:has(#packages:target)     #destinations,
+    body:has(#contact:target)      #destinations { display: none; }
+
+    body:has(#home:target)         #packages,
+    body:has(#destinations:target) #packages,
+    body:has(#contact:target)      #packages    { display: none; }
+
+    body:has(#home:target)         #contact,
+    body:has(#destinations:target) #contact,
+    body:has(#packages:target)     #contact     { display: none; }
+
+    /* ─────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────── */
+    .btn {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.9rem 2.2rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, border-color 0.2s, color 0.2s;
+    }
+
+    .btn--primary {
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+    }
+    .btn--primary:hover { background: var(--gold2); transform: translateY(-2px); }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .btn--ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ─────────────────────────────────────
+       PAGE HERO (shared pattern)
+    ───────────────────────────────────── */
+    .page-hero {
+      position: relative;
+      height: 300px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .page-hero__bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .page-hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0.2));
+    }
+
+    .page-hero__text {
+      position: relative;
+      z-index: 2;
+      padding: 2.5rem 4rem;
+    }
+
+    .page-hero__text h1 {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+
+    .page-hero__text p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+    }
+
+    /* ═══════════════════════════════════
+       HOME PAGE
+    ═══════════════════════════════════ */
+
+    /* Hero */
+    .home-hero {
+      position: relative;
+      height: calc(100vh - 68px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .home-hero__bg {
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?w=1600&q=85') center / cover no-repeat;
+    }
+
+    .home-hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(10, 7, 3, 0.55) 0%,
+        rgba(10, 7, 3, 0.3)  50%,
+        rgba(10, 7, 3, 0.75) 100%
+      );
+    }
+
+    .home-hero__content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 2rem;
+      max-width: 900px;
+    }
+
+    .home-hero__title {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 0.6rem;
+    }
+
+    .home-hero__title em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .home-hero__sub {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .home-hero__actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Stats row inside hero */
+    .hero-stats {
+      display: flex;
+      gap: 4rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 2rem;
+    }
+
+    .hero-stats__item {}
+
+    .hero-stats__num {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .hero-stats__label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Category grid */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      margin-top: 2.5rem;
+    }
+
+    .cat-card {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      height: 260px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .cat-card:hover { transform: translateY(-6px); }
+
+    .cat-card__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .cat-card:hover .cat-card__img { transform: scale(1.06); }
+
+    .cat-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.1) 55%);
+    }
+
+    .cat-card__arrow {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 32px; height: 32px;
+      background: rgba(212, 160, 23, 0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .cat-card:hover .cat-card__arrow {
+      background: var(--gold);
+      color: var(--dark);
+    }
+
+    .cat-card__info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.2rem;
+    }
+
+    .cat-card__icon  { font-size: 1.8rem; margin-bottom: 0.4rem; }
+
+    .cat-card__name  {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .cat-card__count {
+      font-size: 0.75rem;
+      color: var(--gold);
+      margin-top: 2px;
+    }
+
+    /* Stats strip */
+    .stats-strip {
+      background: var(--dark2);
+      padding: 3rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stats-strip__item { text-align: center; flex: 1; min-width: 140px; }
+
+    .stats-strip__num {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .stats-strip__label {
+      font-size: 0.75rem;
+      color: #888;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════
+       DESTINATIONS PAGE
+    ═══════════════════════════════════ */
+
+    /* Filter tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .filter-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius-full);
+      border: 1.5px solid #DDD5C5;
+      background: var(--white);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .filter-tab:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* Section label above grid */
+    .spots-label {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid var(--gold);
+      display: inline-block;
+    }
+
+    /* Spots grid */
+    .spots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.4rem;
+      margin-bottom: 3rem;
+    }
+
+    .spot-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid #EDE5D5;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .spot-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .spot-card__img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+    }
+
+    .spot-card__body { padding: 1rem 1.1rem 1.2rem; }
+
+    .spot-card__rank {
+      display: inline-block;
+      background: var(--dark);
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.08em;
+    }
+
+    .spot-card__name {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .spot-card__loc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .spot-card__desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Package pills */
+    .pkg-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .pkg-pill {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.28rem 0.7rem;
+      border-radius: var(--radius-full);
+      border: 1px solid;
+    }
+
+    .pkg-pill--1day  { background: #FEF3D0; color: #8A6010; border-color: #F0D070; }
+    .pkg-pill--2days { background: #E0EFF8; color: #0A4A7A; border-color: #90C0E0; }
+    .pkg-pill--3days { background: #E8F5E0; color: #2A6010; border-color: #90C870; }
+
+    /* ═══════════════════════════════════
+       PACKAGES PAGE
+    ═══════════════════════════════════ */
+    .pkgs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.6rem;
+    }
+
+    .pkg-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid #EDE5D5;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .pkg-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .pkg-card--featured { border: 2px solid var(--gold); }
+
+    .pkg-card__img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .pkg-card__body { padding: 1.2rem 1.3rem; }
+
+    .pkg-card__badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.7rem;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+    }
+
+    .badge--popular  { background: #EDE0F8; color: #5A1A8A; }
+    .badge--temple   { background: #FEF3D0; color: #8A6010; }
+    .badge--beach    { background: #DAEEF8; color: #0A4A7A; }
+    .badge--hill     { background: #E8F5E0; color: #2A6010; }
+    .badge--falls    { background: #E0EEFA; color: #1A4A8A; }
+    .badge--complete { background: #EDE0F8; color: #5A1A8A; }
+
+    .pkg-card__name {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .pkg-card__dur {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .pkg-card__desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Itinerary inside pkg card */
+    .pkg-card__itin {
+      border-top: 1px solid #EDE5D5;
+      padding-top: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .itin-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .itin-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      margin-bottom: 0.4rem;
+    }
+
+    .itin-day {
+      background: var(--dark3);
+      color: var(--gold);
+      font-size: 0.65rem;
+      font-weight: 600;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .itin-text {
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    /* Includes chips */
+    .pkg-card__incl {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      padding: 0 1.3rem 0.8rem;
+    }
+
+    .incl-chip {
+      font-size: 0.68rem;
+      background: var(--cream2);
+      border: 1px solid #DDD5C5;
+      color: var(--text);
+      padding: 0.2rem 0.55rem;
+      border-radius: 10px;
+    }
+
+    .pkg-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.3rem 1.3rem;
+    }
+
+    .pkg-card__price {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--rust);
+    }
+
+    .pkg-card__price small {
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .btn-book {
+      background: var(--dark);
+      color: var(--white);
+      border: none;
+      padding: 0.55rem 1.2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-book:hover { background: var(--rust); }
+
+    .pkg-card--featured .btn-book { background: var(--gold); color: var(--dark); }
+    .pkg-card--featured .btn-book:hover { background: var(--gold2); }
+
+    /* ═══════════════════════════════════
+       CONTACT PAGE
+    ═══════════════════════════════════ */
+    .contact-body {
+      padding: 3rem 4rem;
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr;
+      gap: 3.5rem;
+    }
+
+    /* Info block */
+    .info-block {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1.8rem;
+      border: 1px solid #EDE5D5;
+      margin-bottom: 1.2rem;
+    }
+
+    .info-block h3 {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+      margin-bottom: 0.9rem;
+    }
+
+    .info-icon {
+      width: 40px; height: 40px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #FEF3D0, #F0D880);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .info-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .info-val {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Rating block */
+    .rating-block {
+      background: var(--dark2);
+      border-radius: var(--radius-md);
+      padding: 1.8rem;
+      border: 1px solid rgba(212, 160, 23, 0.2);
+      margin-bottom: 1.2rem;
+    }
+
+    .rating-block h3 {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .rating-big {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .rating-num {
+      font-family: var(--font-serif);
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .rating-max { font-size: 1rem; color: #888; }
+    .rating-stars { font-size: 1.4rem; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+    .rating-count { font-size: 0.8rem; color: #888; }
+
+    .rating-bars { margin-top: 1rem; }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .bar-label  { font-size: 0.75rem; color: #aaa; width: 38px; text-align: right; }
+    .bar-track  { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+    .bar-fill   { height: 100%; background: var(--gold); border-radius: 3px; }
+    .bar-pct    { font-size: 0.72rem; color: #888; width: 30px; }
+
+    /* Reviews row */
+    .reviews-row {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .review-card {
+      flex: 1;
+      background: var(--white);
+      border-radius: 10px;
+      padding: 0.9rem;
+      border: 1px solid #EDE5D5;
+    }
+
+    .review-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .review-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--rust));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .review-name  { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+    .review-stars { font-size: 0.75rem; }
+    .review-text  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* Contact form */
+    .contact-form {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      border: 1px solid #EDE5D5;
+    }
+
+    .contact-form h3 {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1.5px solid #DDD5C5;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      color: var(--text);
+      background: var(--cream);
+      outline: none;
+      font-family: var(--font-sans);
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--gold); }
+
+    .form-group textarea { height: 100px; resize: vertical; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 0.9rem;
+      border-radius: 9px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-submit:hover { background: var(--gold2); transform: translateY(-2px); }
+
+    /* ─────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────── */
+    .footer {
+      background: var(--dark);
+      color: #666;
+      text-align: center;
+      padding: 2rem 4rem;
+      font-size: 0.82rem;
+      border-top: 1px solid rgba(212, 160, 23, 0.1);
+    }
+
+    .footer span { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- ─────────────────────────────────
+       NAVBAR
+  ───────────────────────────────── -->
+  <nav class="navbar">
+    <a href="#home" class="navbar__logo">Explore <span>Tamil Nadu</span></a>
+    <ul class="navbar__links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#destinations">Destinations</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="navbar__cta">Plan Trip ✈</a>
+  </nav>
+
+
+  <!-- ═══════════════════════════════
+       HOME PAGE
+  ═══════════════════════════════ -->
+  <div id="home" class="page">
+
+    <!-- Hero -->
+    <section class="home-hero">
+      <div class="home-hero__bg"></div>
+      <div class="home-hero__overlay"></div>
+      <div class="home-hero__content">
+        <span class="eyebrow">✦ Incredible South India</span>
+        <h1 class="home-hero__title">
+          Discover the Heart of<br><em>Tamil Nadu</em>
+        </h1>
+        <p class="home-hero__sub">
+          Ancient temples that touch the sky, golden beaches where three seas meet,
+          misty hill stations and roaring waterfalls — one state, infinite wonders.
+        </p>
+        <div class="home-hero__actions">
+          <a href="#destinations" class="btn btn--primary">Explore Destinations</a>
+          <a href="#packages"     class="btn btn--ghost">View Packages</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stats__item">
+            <div class="hero-stats__num">38,000+</div>
+            <div class="hero-stats__label">Temples</div>
+          </div>
+          <div class="hero-stats__item">
+            <div class="hero-stats__num">1,076 km</div>
+            <div class="hero-stats__label">Coastline</div>
+          </div>
+          <div class="hero-stats__item">
+            <div class="hero-stats__num">3 UNESCO</div>
+            <div class="hero-stats__label">World Heritage</div>
+          </div>
+          <div class="hero-stats__item">
+            <div class="hero-stats__num">5,000 Yrs</div>
+            <div class="hero-stats__label">of History</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Cards -->
+    <section class="section section--white">
+      <span class="eyebrow">✦ Browse by Category</span>
+      <h2 class="heading-serif" style="font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 0.6rem;">What calls you?</h2>
+      <p class="subtext">Pick a category and dive deep into Tamil Nadu's finest destinations.</p>
+
+      <div class="cat-grid">
+
+        <a href="#destinations" class="cat-card">
+          <img class="cat-card__img"
+            src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80"
+            alt="Temples" loading="lazy" />
+          <div class="cat-card__overlay"></div>
+          <div class="cat-card__arrow">→</div>
+          <div class="cat-card__info">
+            <div class="cat-card__icon">🛕</div>
+            <div class="cat-card__name">Temples</div>
+            <div class="cat-card__count">Top 10 sacred sites</div>
+          </div>
+        </a>
+
+        <a href="#destinations" class="cat-card">
+          <img class="cat-card__img"
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80"
+            alt="Beaches" loading="lazy" />
+          <div class="cat-card__overlay"></div>
+          <div class="cat-card__arrow">→</div>
+          <div class="cat-card__info">
+            <div class="cat-card__icon">🏖️</div>
+            <div class="cat-card__name">Beaches</div>
+            <div class="cat-card__count">Top 10 coastal gems</div>
+          </div>
+        </a>
+
+        <a href="#destinations" class="cat-card">
+          <img class="cat-card__img"
+            src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80"
+            alt="Hills" loading="lazy" />
+          <div class="cat-card__overlay"></div>
+          <div class="cat-card__arrow">→</div>
+          <div class="cat-card__info">
+            <div class="cat-card__icon">⛰️</div>
+            <div class="cat-card__name">Hill Stations</div>
+            <div class="cat-card__count">Top 10 hill retreats</div>
+          </div>
+        </a>
+
+        <a href="#destinations" class="cat-card">
+          <img class="cat-card__img"
+            src="https://images.unsplash.com/photo-1511497584788-876760111969?w=600&q=80"
+            alt="Waterfalls" loading="lazy" />
+          <div class="cat-card__overlay"></div>
+          <div class="cat-card__arrow">→</div>
+          <div class="cat-card__info">
+            <div class="cat-card__icon">💧</div>
+            <div class="cat-card__name">Waterfalls</div>
+            <div class="cat-card__count">Top 10 scenic falls</div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="stats-strip__item">
+        <div class="stats-strip__num">15+</div>
+        <div class="stats-strip__label">Years of Experience</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__num">10,000+</div>
+        <div class="stats-strip__label">Happy Travellers</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__num">40+</div>
+        <div class="stats-strip__label">Curated Packages</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__num">24 / 7</div>
+        <div class="stats-strip__label">On-trip Support</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__num">4.9 ★</div>
+        <div class="stats-strip__label">Average Rating</div>
+      </div>
+    </div>
+
+  </div><!-- /home -->
+
+
+  <!-- ═══════════════════════════════
+       DESTINATIONS PAGE
+  ═══════════════════════════════ -->
+  <div id="destinations" class="page">
+
+    <div class="page-hero">
+      <div class="page-hero__bg"
+        style="background-image: url('https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1400&q=80');">
+      </div>
+      <div class="page-hero__overlay"></div>
+      <div class="page-hero__text">
+        <h1>Destinations</h1>
+        <p>Temples · Beaches · Hill Stations · Waterfalls — explore Tamil Nadu's finest</p>
+      </div>
+    </div>
+
+    <div class="section">
+
+      <!-- Filter tabs — purely visual; all 4 sections shown below -->
+      <div class="filter-tabs">
+        <a href="#dest-temples" class="filter-tab">🛕 Temples</a>
+        <a href="#dest-beaches" class="filter-tab">🏖️ Beaches</a>
+        <a href="#dest-hills"   class="filter-tab">⛰️ Hill Stations</a>
+        <a href="#dest-falls"   class="filter-tab">💧 Waterfalls</a>
+      </div>
+
+      <!-- ── TEMPLES ── -->
+      <div id="dest-temples">
+        <div class="spots-label">🛕 Top 10 Temples in Tamil Nadu</div>
+        <div class="spots-grid">
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80" alt="Meenakshi Amman Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#1 TOP PICK</span>
+              <div class="spot-card__name">Meenakshi Amman Temple</div>
+              <div class="spot-card__loc">📍 Madurai</div>
+              <div class="spot-card__desc">14 towering gopurams adorned with 33,000 sculptures. One of India's greatest architectural marvels, still an active place of worship.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,499</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1621603899751-d1dc7d7c0ee0?w=600&q=80" alt="Brihadeeswarar Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#2 TOP PICK</span>
+              <div class="spot-card__name">Brihadeeswarar Temple</div>
+              <div class="spot-card__loc">📍 Thanjavur</div>
+              <div class="spot-card__desc">UNESCO World Heritage Site built by Raja Raja Chola I in 1010 AD. The 66-metre vimana casts no shadow at noon.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,299</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,299</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=600&q=80" alt="Ramanathaswamy Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#3 TOP PICK</span>
+              <div class="spot-card__name">Ramanathaswamy Temple</div>
+              <div class="spot-card__loc">📍 Rameswaram</div>
+              <div class="spot-card__desc">The world's longest temple corridor stretches 1,212 metres. On the sacred Pamban Island, a must-visit pilgrimage.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,199</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,299</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80" alt="Shore Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#4 TOP PICK</span>
+              <div class="spot-card__name">Shore Temple</div>
+              <div class="spot-card__loc">📍 Mahabalipuram</div>
+              <div class="spot-card__desc">7th-century Pallava masterpiece on the Bay of Bengal. UNESCO World Heritage Site with stunning sea views.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1595853035070-59a39fe84de3?w=600&q=80" alt="Kapaleeshwarar Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#5 TOP PICK</span>
+              <div class="spot-card__name">Kapaleeshwarar Temple</div>
+              <div class="spot-card__loc">📍 Chennai (Mylapore)</div>
+              <div class="spot-card__desc">An ancient Shiva temple in the heart of Mylapore, Chennai. Magnificent gopuram and vibrant surrounding bazaar.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹899</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=80" alt="Ekambareswarar Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#6 TOP PICK</span>
+              <div class="spot-card__name">Ekambareswarar Temple</div>
+              <div class="spot-card__loc">📍 Kanchipuram</div>
+              <div class="spot-card__desc">One of the Pancha Bhuta Stalas representing Earth. The ancient mango tree inside is said to be 3,500 years old.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,699</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,799</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Nataraja Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#7 TOP PICK</span>
+              <div class="spot-card__name">Nataraja Temple</div>
+              <div class="spot-card__loc">📍 Chidambaram</div>
+              <div class="spot-card__desc">The cosmic dance of Shiva is celebrated here. One of the Pancha Bhuta Stalas representing the element of sky.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹999</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,599</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,699</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1574271143515-5cddf8da19be?w=600&q=80" alt="Murugan Temple Palani" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#8 TOP PICK</span>
+              <div class="spot-card__name">Murugan Temple Palani</div>
+              <div class="spot-card__loc">📍 Dindigul (Palani)</div>
+              <div class="spot-card__desc">Perched atop a 152m hill, this Murugan temple is one of the six abodes of Lord Murugan. Ropeway available.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹999</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Tiruchendur Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#9 TOP PICK</span>
+              <div class="spot-card__name">Arulmigu Subramaniya Temple</div>
+              <div class="spot-card__loc">📍 Tiruchendur</div>
+              <div class="spot-card__desc">One of the six Murugan abodes, right on the seashore. Unique coastal temple with waves crashing at its feet.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,899</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,199</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="Adi Kumbeswarar Temple" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#10 TOP PICK</span>
+              <div class="spot-card__name">Adi Kumbeswarar Temple</div>
+              <div class="spot-card__loc">📍 Kumbakonam</div>
+              <div class="spot-card__desc">The "Temple Town" of South India — Kumbakonam has over 188 temples. Adi Kumbeswarar is the grandest of them all.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,199</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,299</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /dest-temples -->
+
+      <!-- ── BEACHES ── -->
+      <div id="dest-beaches">
+        <div class="spots-label">🏖️ Top 10 Beaches in Tamil Nadu</div>
+        <div class="spots-grid">
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Marina Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#1 TOP PICK</span>
+              <div class="spot-card__name">Marina Beach</div>
+              <div class="spot-card__loc">📍 Chennai</div>
+              <div class="spot-card__desc">World's second-longest urban beach at 13 km. Iconic sunrise, fresh sundal, MGR memorial and the famous lighthouse.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹799</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,299</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?w=600&q=80" alt="Dhanushkodi Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#2 TOP PICK</span>
+              <div class="spot-card__name">Dhanushkodi Beach</div>
+              <div class="spot-card__loc">📍 Rameswaram</div>
+              <div class="spot-card__desc">A ghost-town beach at the tip of Pamban Island where the Bay of Bengal meets the Indian Ocean. Raw and haunting beauty.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,299</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Kanyakumari Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#3 TOP PICK</span>
+              <div class="spot-card__name">Kanyakumari Beach</div>
+              <div class="spot-card__loc">📍 Kanyakumari</div>
+              <div class="spot-card__desc">Where three seas converge. Watch sunrise and sunset from the same beach — the southernmost tip of mainland India.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,199</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,199</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Rameswaram Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#4 TOP PICK</span>
+              <div class="spot-card__name">Rameswaram Beach</div>
+              <div class="spot-card__loc">📍 Rameswaram</div>
+              <div class="spot-card__desc">Crystal-clear shallow waters with sacred Agni Theertham ghat. Pristine sands framing the iconic Pamban Bridge.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹999</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&q=80" alt="Mahabalipuram Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#5 TOP PICK</span>
+              <div class="spot-card__name">Mahabalipuram Beach</div>
+              <div class="spot-card__loc">📍 Mahabalipuram</div>
+              <div class="spot-card__desc">Combine heritage and beach — the Shore Temple stands right at the shoreline with gentle waves lapping at its walls.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,699</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,799</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1511497584788-876760111969?w=600&q=80" alt="Covelong Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#6 TOP PICK</span>
+              <div class="spot-card__name">Covelong Beach</div>
+              <div class="spot-card__loc">📍 Kovalam, Chennai</div>
+              <div class="spot-card__desc">A charming fishing village turned surf destination — the cleanest and most laid-back beach near Chennai.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹899</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,299</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1574271143515-5cddf8da19be?w=600&q=80" alt="Muttukadu Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#7 TOP PICK</span>
+              <div class="spot-card__name">Muttukadu Beach</div>
+              <div class="spot-card__loc">📍 Chennai ECR</div>
+              <div class="spot-card__desc">A serene backwater-meets-beach experience along East Coast Road, perfect for boating, windsurfing and picnics.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹799</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,199</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹3,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1549366021-9f761d450615?w=600&q=80" alt="Pondicherry Promenade" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#8 TOP PICK</span>
+              <div class="spot-card__name">Pondicherry Beach (Promenade)</div>
+              <div class="spot-card__loc">📍 Puducherry</div>
+              <div class="spot-card__desc">A unique blend of French colonial charm and Indian culture along a scenic beachside promenade boulevard.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,899</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,199</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1603550283930-65040f70c7d4?w=600&q=80" alt="Velankanni Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#9 TOP PICK</span>
+              <div class="spot-card__name">Velankanni Beach</div>
+              <div class="spot-card__loc">📍 Nagapattinam</div>
+              <div class="spot-card__desc">A sacred beach town known for the Basilica of Our Lady of Good Health. Peaceful, spiritual and picturesque.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹999</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,599</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,699</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80" alt="Thoothukudi Beach" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#10 TOP PICK</span>
+              <div class="spot-card__name">Thoothukudi (Tuticorin) Beach</div>
+              <div class="spot-card__loc">📍 Thoothukudi</div>
+              <div class="spot-card__desc">Pearl City's coastline — famous for pearl fishing, unique saltpans and the serene Hare Island reef.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,099</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /dest-beaches -->
+
+      <!-- ── HILLS ── -->
+      <div id="dest-hills">
+        <div class="spots-label">⛰️ Top 10 Hill Stations in Tamil Nadu</div>
+        <div class="spots-grid">
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80" alt="Ooty" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#1 TOP PICK</span>
+              <div class="spot-card__name">Ooty (Udhagamandalam)</div>
+              <div class="spot-card__loc">📍 Nilgiris</div>
+              <div class="spot-card__desc">Queen of Hill Stations. Tea plantations, the iconic UNESCO Nilgiri Mountain Railway toy train, Botanical Gardens and misty mornings.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹4,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹7,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1574271143515-5cddf8da19be?w=600&q=80" alt="Kodaikanal" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#2 TOP PICK</span>
+              <div class="spot-card__name">Kodaikanal</div>
+              <div class="spot-card__loc">📍 Dindigul</div>
+              <div class="spot-card__desc">Princess of Hill Stations at 2,133m. Star-shaped lake, Silver Cascade falls, Pillar Rocks and enchanting pine forests.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹4,199</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹7,199</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80" alt="Yercaud" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#3 TOP PICK</span>
+              <div class="spot-card__name">Yercaud</div>
+              <div class="spot-card__loc">📍 Salem</div>
+              <div class="spot-card__desc">"Poor Man's Ooty" — peaceful, budget-friendly hill town with coffee and orange plantations, emerald lake and serene forests.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,599</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1511497584788-876760111969?w=600&q=80" alt="Valparai" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#4 TOP PICK</span>
+              <div class="spot-card__name">Valparai</div>
+              <div class="spot-card__loc">📍 Coimbatore</div>
+              <div class="spot-card__desc">A hidden gem in the Anamalai Hills — 40 hairpin bends, tea and coffee estates, and wild elephant sightings.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹4,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹7,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80" alt="Coonoor" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#5 TOP PICK</span>
+              <div class="spot-card__name">Coonoor</div>
+              <div class="spot-card__loc">📍 Nilgiris</div>
+              <div class="spot-card__desc">A quieter, less touristy hill station than Ooty with stunning Sim's Park, Lamb's Rock viewpoint and lush tea estates.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,799</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹6,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1603550283930-65040f70c7d4?w=600&q=80" alt="Kolli Hills" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#6 TOP PICK</span>
+              <div class="spot-card__name">Kolli Hills</div>
+              <div class="spot-card__loc">📍 Namakkal</div>
+              <div class="spot-card__desc">An unexplored treasure — 70 hairpin bends lead to this serene plateau with ancient temples and stunning waterfalls.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,299</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,199</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1549366021-9f761d450615?w=600&q=80" alt="Yelagiri Hills" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#7 TOP PICK</span>
+              <div class="spot-card__name">Yelagiri Hills</div>
+              <div class="spot-card__loc">📍 Tirupattur</div>
+              <div class="spot-card__desc">A compact, serene hill station with rose gardens, a tranquil lake and paragliding — just 4 hours from Chennai.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,499</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,299</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,799</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="Meghamalai" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#8 TOP PICK</span>
+              <div class="spot-card__name">Meghamalai (High Wavy Mountains)</div>
+              <div class="spot-card__loc">📍 Theni</div>
+              <div class="spot-card__desc">A remote, misty paradise of tea and cardamom plantations at 1,500m — rarely visited and breathtakingly beautiful.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹4,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹8,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=80" alt="Sirumalai Hills" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#9 TOP PICK</span>
+              <div class="spot-card__name">Sirumalai Hills</div>
+              <div class="spot-card__loc">📍 Dindigul</div>
+              <div class="spot-card__desc">A quiet, lush hill range with banana plantations, coffee estates and the scenic Sirumalai Falls — uncrowded and pure.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,199</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,099</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,299</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80" alt="Javvadhu Hills" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#10 TOP PICK</span>
+              <div class="spot-card__name">Javvadhu Hills</div>
+              <div class="spot-card__loc">📍 Tiruvannamalai</div>
+              <div class="spot-card__desc">Remote tribal hills with dense forests, honey farms, natural springs and the spectacular Jamunamarathur waterfall.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,899</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,999</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /dest-hills -->
+
+      <!-- ── WATERFALLS ── -->
+      <div id="dest-falls">
+        <div class="spots-label">💧 Top 10 Waterfalls in Tamil Nadu</div>
+        <div class="spots-grid">
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1511497584788-876760111969?w=600&q=80" alt="Courtallam Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#1 TOP PICK</span>
+              <div class="spot-card__name">Courtallam Falls (Kutralam)</div>
+              <div class="spot-card__loc">📍 Tenkasi</div>
+              <div class="spot-card__desc">"Spa of South India" — 9 majestic waterfalls amidst medicinal herb forests. The Main Falls is 60 metres tall.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,299</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,199</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,799</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=600&q=80" alt="Hogenakkal Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#2 TOP PICK</span>
+              <div class="spot-card__name">Hogenakkal Falls</div>
+              <div class="spot-card__loc">📍 Dharmapuri</div>
+              <div class="spot-card__desc">"Niagara of India" — the Kaveri River plunges over volcanic rocks creating misty, thunderous cascades. Coracle rides are iconic.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1574271143515-5cddf8da19be?w=600&q=80" alt="Silver Cascade Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#3 TOP PICK</span>
+              <div class="spot-card__name">Silver Cascade Falls</div>
+              <div class="spot-card__loc">📍 Kodaikanal</div>
+              <div class="spot-card__desc">A silver ribbon of water cascading 180 feet over rocks — visible from the main road into Kodaikanal.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,599</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹3,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹6,799</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1549366021-9f761d450615?w=600&q=80" alt="Agaya Gangai Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#4 TOP PICK</span>
+              <div class="spot-card__name">Agaya Gangai Falls</div>
+              <div class="spot-card__loc">📍 Kolli Hills, Namakkal</div>
+              <div class="spot-card__desc">A majestic 300-metre waterfall hidden in the Kolli Hills, accessible only by a 1,000-step staircase through dense forest.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,199</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,999</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,299</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1603550283930-65040f70c7d4?w=600&q=80" alt="Monkey Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#5 TOP PICK</span>
+              <div class="spot-card__name">Monkey Falls</div>
+              <div class="spot-card__loc">📍 Valparai, Coimbatore</div>
+              <div class="spot-card__desc">A lush forest waterfall on the Coimbatore–Valparai route, famous for the Bonnet Macaque monkeys that play in the water.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹999</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,499</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80" alt="Papanasam Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#6 TOP PICK</span>
+              <div class="spot-card__name">Papanasam Falls</div>
+              <div class="spot-card__loc">📍 Tirunelveli</div>
+              <div class="spot-card__desc">Set amidst the sacred Courtallam forest, this twin-stream waterfall is believed to wash away sins — divinely beautiful.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹999</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,699</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&q=80" alt="Thirparappu Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#7 TOP PICK</span>
+              <div class="spot-card__name">Thirparappu Falls</div>
+              <div class="spot-card__loc">📍 Kanyakumari district</div>
+              <div class="spot-card__desc">A wide, gentle waterfall over ancient granite rocks with a serene Shiva temple and scenic picnic area alongside.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹899</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,699</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Kiliyur Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#8 TOP PICK</span>
+              <div class="spot-card__name">Kiliyur Falls</div>
+              <div class="spot-card__loc">📍 Yercaud, Salem</div>
+              <div class="spot-card__desc">A 300-metre waterfall cascading through lush Salem forest reserve, accessible by trekking through a 3 km forest trail.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,899</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,999</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=600&q=80" alt="Suruli Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#9 TOP PICK</span>
+              <div class="spot-card__name">Suruli Falls</div>
+              <div class="spot-card__loc">📍 Cumbum, Theni</div>
+              <div class="spot-card__desc">A spectacular three-stage waterfall on the Suruliyar River, flanked by cardamom and coffee estates in the Vaigai basin.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹1,099</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,799</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹5,299</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot-card">
+            <img class="spot-card__img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Ambasamudram Falls" loading="lazy" />
+            <div class="spot-card__body">
+              <span class="spot-card__rank">#10 TOP PICK</span>
+              <div class="spot-card__name">Ambasamudram Falls</div>
+              <div class="spot-card__loc">📍 Tirunelveli</div>
+              <div class="spot-card__desc">A series of scenic cascades on the Tamirabarani River surrounded by peaceful paddy fields and Western Ghats foothills.</div>
+              <div class="pkg-pills">
+                <span class="pkg-pill pkg-pill--1day">1 Day — ₹899</span>
+                <span class="pkg-pill pkg-pill--2days">2 Days — ₹2,499</span>
+                <span class="pkg-pill pkg-pill--3days">3 Days — ₹4,499</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /dest-falls -->
+
+    </div>
+  </div><!-- /destinations -->
+
+
+  <!-- ═══════════════════════════════
+       PACKAGES PAGE
+  ═══════════════════════════════ -->
+  <div id="packages" class="page">
+
+    <div class="page-hero">
+      <div class="page-hero__bg"
+        style="background-image: url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1400&q=80');">
+      </div>
+      <div class="page-hero__overlay"></div>
+      <div class="page-hero__text">
+        <h1>All Travel Packages</h1>
+        <p>Day-by-day itineraries crafted for every type of traveller</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="pkgs-grid">
+
+        <!-- Complete Tamil Nadu -->
+        <div class="pkg-card pkg-card--featured">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80" alt="Complete Tamil Nadu" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--popular">⭐ Most Popular</span>
+              <span class="badge badge--complete">Complete</span>
+            </div>
+            <div class="pkg-card__name">Complete Tamil Nadu</div>
+            <div class="pkg-card__dur">⏱ 10 Days / 9 Nights</div>
+            <div class="pkg-card__desc">The ultimate TN journey — temples, beaches, hills and wildlife all in one grand adventure.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Chennai — Fort St. George + Marina Beach</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Mahabalipuram — Shore Temple + Rathas</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Thanjavur — Brihadeeswarar Temple</div></div>
+              <div class="itin-row"><div class="itin-day">4</div><div class="itin-text">Chettinad — Heritage Mansion stay</div></div>
+              <div class="itin-row"><div class="itin-day">5</div><div class="itin-text">Madurai — Meenakshi Temple aarti</div></div>
+              <div class="itin-row"><div class="itin-day">6</div><div class="itin-text">Rameswaram — Agni Theertham + Dhanushkodi</div></div>
+              <div class="itin-row"><div class="itin-day">7</div><div class="itin-text">Kanyakumari — Sunrise + Vivekananda Rock</div></div>
+              <div class="itin-row"><div class="itin-day">8</div><div class="itin-text">Courtallam Falls + Tirunelveli</div></div>
+              <div class="itin-row"><div class="itin-day">9</div><div class="itin-text">Ooty — Toy Train + tea estate</div></div>
+              <div class="itin-row"><div class="itin-day">10</div><div class="itin-text">Mudumalai Safari + fly home</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ 4★ Hotels</span>
+            <span class="incl-chip">✓ All Meals</span>
+            <span class="incl-chip">✓ Safari</span>
+            <span class="incl-chip">✓ Toy Train</span>
+            <span class="incl-chip">✓ Flight Drop</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹27,999<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Grand Temple Circuit -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1621603899751-d1dc7d7c0ee0?w=600&q=80" alt="Grand Temple Circuit" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--temple">Temple</span>
+            </div>
+            <div class="pkg-card__name">Grand Temple Circuit</div>
+            <div class="pkg-card__dur">⏱ 6 Days / 5 Nights</div>
+            <div class="pkg-card__desc">The definitive pilgrimage through TN's most sacred and architectural wonders.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Chennai + Mahabalipuram Shore Temple</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Kanchipuram — 3 major temples</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Thanjavur — Brihadeeswarar + Darasuram</div></div>
+              <div class="itin-row"><div class="itin-day">4</div><div class="itin-text">Madurai — Meenakshi evening aarti</div></div>
+              <div class="itin-row"><div class="itin-day">5</div><div class="itin-text">Rameswaram — Ramanathaswamy + Dhanushkodi</div></div>
+              <div class="itin-row"><div class="itin-day">6</div><div class="itin-text">Fly from Madurai</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ 3★ Hotels</span>
+            <span class="incl-chip">✓ AC Transport</span>
+            <span class="incl-chip">✓ Expert Guide</span>
+            <span class="incl-chip">✓ Breakfast</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹14,999<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Coastal Bliss -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Coastal Bliss" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--beach">Beach</span>
+            </div>
+            <div class="pkg-card__name">Coastal Bliss Getaway</div>
+            <div class="pkg-card__dur">⏱ 4 Days / 3 Nights</div>
+            <div class="pkg-card__desc">Soak in TN's stunning coastline from Chennai to the southernmost tip of India.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Chennai — Marina Beach + Mylapore</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Mahabalipuram — Shore Temple beach</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Rameswaram — Dhanushkodi ghost beach</div></div>
+              <div class="itin-row"><div class="itin-day">4</div><div class="itin-text">Kanyakumari — three seas + fly</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ 3★ Hotels</span>
+            <span class="incl-chip">✓ AC Transport</span>
+            <span class="incl-chip">✓ Boat Ride</span>
+            <span class="incl-chip">✓ Breakfast</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹9,499<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Nilgiri Hills Escape -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80" alt="Nilgiri Hills Escape" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--hill">Hill</span>
+            </div>
+            <div class="pkg-card__name">Nilgiri Hills Escape</div>
+            <div class="pkg-card__dur">⏱ 5 Days / 4 Nights</div>
+            <div class="pkg-card__desc">Breathe mountain air across Ooty, Coonoor and Kodaikanal with tea and toy train.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Coimbatore → Ooty via Coonoor</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Nilgiri Toy Train + Ooty Botanical Garden</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Ooty → Kodaikanal via Palani</div></div>
+              <div class="itin-row"><div class="itin-day">4</div><div class="itin-text">Coaker's Walk + Pillar Rocks + Silver Cascade</div></div>
+              <div class="itin-row"><div class="itin-day">5</div><div class="itin-text">Kodaikanal lake + return Madurai</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ 4★ Hill Resort</span>
+            <span class="incl-chip">✓ Toy Train</span>
+            <span class="incl-chip">✓ Tea Tour</span>
+            <span class="incl-chip">✓ All Meals</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹12,499<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Waterfall Explorer -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1511497584788-876760111969?w=600&q=80" alt="Waterfall Explorer" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--falls">Waterfalls</span>
+            </div>
+            <div class="pkg-card__name">Waterfall Explorer</div>
+            <div class="pkg-card__dur">⏱ 4 Days / 3 Nights</div>
+            <div class="pkg-card__desc">Chase TN's most spectacular cascades — from Hogenakkal to Courtallam to Silver Cascade.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Hogenakkal Falls + coracle ride</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Yercaud Kiliyur Falls trek</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Kodaikanal — Silver Cascade + Pillar Rocks</div></div>
+              <div class="itin-row"><div class="itin-day">4</div><div class="itin-text">Courtallam Nine Falls + depart</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ 3★ Hotels</span>
+            <span class="incl-chip">✓ Transport</span>
+            <span class="incl-chip">✓ Coracle</span>
+            <span class="incl-chip">✓ Breakfast</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹9,999<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Chola Heritage Trail -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=80" alt="Chola Heritage Trail" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--temple">Temple</span>
+            </div>
+            <div class="pkg-card__name">Chola Heritage Trail</div>
+            <div class="pkg-card__dur">⏱ 3 Days / 2 Nights</div>
+            <div class="pkg-card__desc">Explore the stunning Chola trinity — three UNESCO world heritage temples in one focused trip.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Thanjavur Brihadeeswarar + Palace</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Gangaikonda Cholapuram + Darasuram</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Chidambaram Nataraja + return</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ 3★ Hotel</span>
+            <span class="incl-chip">✓ Transport</span>
+            <span class="incl-chip">✓ Heritage Guide</span>
+            <span class="incl-chip">✓ Breakfast</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹7,499<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Pondicherry & ECR -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Pondicherry & ECR" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--beach">Beach</span>
+            </div>
+            <div class="pkg-card__name">Pondicherry &amp; ECR Beaches</div>
+            <div class="pkg-card__dur">⏱ 3 Days / 2 Nights</div>
+            <div class="pkg-card__desc">French colonial charm meets Tamil coastline in this breezy southern road trip.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Chennai ECR — Covelong surf + Muttukadu</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Pondicherry French Quarter + Promenade Beach</div></div>
+              <div class="itin-row"><div class="itin-day">3</div><div class="itin-text">Auroville + Serenity Beach + return</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ Boutique Hotel</span>
+            <span class="incl-chip">✓ Surf Lesson</span>
+            <span class="incl-chip">✓ Transport</span>
+            <span class="incl-chip">✓ Breakfast</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹6,999<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Kodaikanal Weekend -->
+        <div class="pkg-card">
+          <img class="pkg-card__img" src="https://images.unsplash.com/photo-1574271143515-5cddf8da19be?w=600&q=80" alt="Kodaikanal Weekend" loading="lazy" />
+          <div class="pkg-card__body">
+            <div class="pkg-card__badges">
+              <span class="badge badge--hill">Hill</span>
+            </div>
+            <div class="pkg-card__name">Kodaikanal Weekend</div>
+            <div class="pkg-card__dur">⏱ 2 Days / 1 Night</div>
+            <div class="pkg-card__desc">A quick mountain getaway to the Princess of Hill Stations — perfect for weekends.</div>
+            <div class="pkg-card__itin">
+              <div class="itin-label">Day-by-day plan</div>
+              <div class="itin-row"><div class="itin-day">1</div><div class="itin-text">Drive Madurai → Kodaikanal. Lake + Coaker's Walk</div></div>
+              <div class="itin-row"><div class="itin-day">2</div><div class="itin-text">Pillar Rocks + Silver Cascade + return</div></div>
+            </div>
+          </div>
+          <div class="pkg-card__incl">
+            <span class="incl-chip">✓ Hill Resort</span>
+            <span class="incl-chip">✓ Transport</span>
+            <span class="incl-chip">✓ Breakfast</span>
+          </div>
+          <div class="pkg-card__footer">
+            <div class="pkg-card__price">₹4,999<small>/person</small></div>
+            <a href="#contact" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /packages -->
+
+
+  <!-- ═══════════════════════════════
+       CONTACT PAGE
+  ═══════════════════════════════ -->
+  <div id="contact" class="page">
+
+    <div class="page-hero">
+      <div class="page-hero__bg"
+        style="background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1400&q=80');">
+      </div>
+      <div class="page-hero__overlay"></div>
+      <div class="page-hero__text">
+        <h1>Contact Us</h1>
+        <p>Let our experts plan the perfect Tamil Nadu journey for you</p>
+      </div>
+    </div>
+
+    <div class="contact-body">
+
+      <!-- Left column -->
+      <div>
+
+        <!-- Get in touch -->
+        <div class="info-block">
+          <h3>Get In Touch</h3>
+
+          <div class="info-row">
+            <div class="info-icon">📞</div>
+            <div>
+              <span class="info-label">Phone</span>
+              <span class="info-val">+91 44 1234 5678<br>+91 98765 43210 (WhatsApp)</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-icon">✉️</div>
+            <div>
+              <span class="info-label">Email</span>
+              <span class="info-val">hello@exploretamilnadu.in<br>bookings@exploretamilnadu.in</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-icon">📍</div>
+            <div>
+              <span class="info-label">Office Location</span>
+              <span class="info-val">No. 12, Anna Salai,<br>Teynampet, Chennai – 600 018,<br>Tamil Nadu, India</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-icon">🕐</div>
+            <div>
+              <span class="info-label">Working Hours</span>
+              <span class="info-val">Monday – Saturday: 9:00 AM – 7:00 PM IST<br>Sunday: 10:00 AM – 4:00 PM IST</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating -->
+        <div class="rating-block">
+          <h3>Office Rating</h3>
+          <div class="rating-big">
+            <span class="rating-num">4.9</span>
+            <span class="rating-max">/ 5.0</span>
+          </div>
+          <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+          <div class="rating-count">Based on 1,248 verified reviews</div>
+          <div class="rating-bars">
+            <div class="bar-row">
+              <span class="bar-label">5 ★</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 89%;"></div></div>
+              <span class="bar-pct">89%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">4 ★</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 8%;"></div></div>
+              <span class="bar-pct">8%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">3 ★</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 2%;"></div></div>
+              <span class="bar-pct">2%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">2 ★</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 1%;"></div></div>
+              <span class="bar-pct">1%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">1 ★</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 0%;"></div></div>
+              <span class="bar-pct">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="reviews-row">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="review-avatar">RK</div>
+              <div>
+                <div class="review-name">Rajesh Kumar</div>
+                <div class="review-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+            <div class="review-text">"Absolutely flawless experience. The temple circuit was breathtaking — highly recommend!"</div>
+          </div>
+          <div class="review-card">
+            <div class="review-top">
+              <div class="review-avatar">PM</div>
+              <div>
+                <div class="review-name">Priya M.</div>
+                <div class="review-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+            <div class="review-text">"From booking to the last day, everything was perfectly arranged. Will travel again!"</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right column: form -->
+      <div class="contact-form">
+        <h3>Plan Your Trip</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="Arjun" />
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Kumar" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@email.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="+91 98765 43210" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tdate">Travel Date</label>
+            <input type="date" id="tdate" />
+          </div>
+          <div class="form-group">
+            <label for="travellers">No. of Travellers</label>
+            <input type="number" id="travellers" placeholder="2" min="1" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="package">Choose Package</label>
+          <select id="package">
+            <option>Select a package</option>
+            <option>Grand Temple Circuit (6D/5N)</option>
+            <option>Coastal Bliss (4D/3N)</option>
+            <option>Nilgiri Hills Escape (5D/4N)</option>
+            <option>Waterfall Explorer (3D/2N)</option>
+            <option>Complete Tamil Nadu (10D/9N)</option>
+            <option>Custom Itinerary</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Special Requirements</label>
+          <textarea id="notes" placeholder="Any dietary needs, accessibility requirements, preferred hotels..."></textarea>
+        </div>
+
+        <button class="btn-submit">✈ Plan My Trip Now</button>
+      </div>
+
+    </div>
+  </div><!-- /contact -->
+
+
+  <!-- ─────────────────────────────────
+       FOOTER
+  ───────────────────────────────── -->
+  <footer class="footer">
+    <p>
+      © 2025 <span>Explore Tamil Nadu</span> &nbsp;·&nbsp;
+      No. 12, Anna Salai, Chennai &nbsp;·&nbsp;
+      hello@exploretamilnadu.in &nbsp;·&nbsp;
+      +91 44 1234 5678
+    </p>
+  </footer>
+
+</body>
+</html>
